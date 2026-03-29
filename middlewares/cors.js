@@ -4,8 +4,8 @@ const ACCEPTED_ORIGINS = [
   'http://localhost:3050',
   'http://localhost:1234',
   'http://localhost:5173',
-  'https://my-fake-movie-app.com',
-  'NGROK_URL'
+  'https://agenda-clinica-react.vercel.app',
+  'FRONT_URL'
 ]
 
 export const corsMiddleware = ({ acceptedOrigins = ACCEPTED_ORIGINS } = {}) => CORS({

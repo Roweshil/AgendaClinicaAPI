@@ -5,6 +5,11 @@ import { BadRequestError } from "../utils/app.error.js";
 
 export class AuthController {
    static async login(req, res) {
+        const cookieOptions = {
+            httpOnly: true, // solo se puede acceder en el servidor
+            secure: true,//process.env.NODE_ENV === 'production', // la cookie solo se puede acceder en https
+            sameSite: 'none',  //la cookie solo se puede acceder en el mismo dominio
+        }
 
         const result = validateAuth(req.body)
 
@@ -15,9 +20,7 @@ export class AuthController {
             
         res
         .cookie('access_token', token, {
-            httpOnly: true, // solo se puede acceder en el servidor
-            secure: false,//process.env.NODE_ENV === 'production', // la cookie solo se puede acceder en https
-            sameSite: 'strict',  //la cookie solo se puede acceder en el mismo dominio
+            ...cookieOptions,
             maxAge: 1800000 // validez durante 15 minutos
         })
         .json({ response })
@@ -25,11 +28,7 @@ export class AuthController {
     }
 
     static logout(req, res) {
-        res.clearCookie('access_token', {
-            httpOnly: true,
-            sameSite: 'strict',
-            secure: process.env.NODE_ENV === 'production'
-        })
+        res.clearCookie('access_token', cookieOptions)
 
         res.json({ message: 'Logout exitoso' })
     }
