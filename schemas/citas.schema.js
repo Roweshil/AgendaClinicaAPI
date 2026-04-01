@@ -18,10 +18,10 @@ const citaSchema = z.object({
         invalid_type_error: 'el motivo es necesario',
         required_error: 'el motivo es requerido',
     }).min(2).max(255),
-    estado: z.string({
-        invalid_type_error: 'el estado es necesario',
-        required_error: 'el estado es requerido'
-    }).min(2).max(50)
+    estado: z.enum(["confirmada", "cancelada", "vencida"], {
+        required_error: "el estado es requerido",
+        invalid_type_error: "estado inválido"
+    })
 })
 
 const IdParamSchema = z.object({
