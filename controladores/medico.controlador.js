@@ -9,7 +9,10 @@ export class MedicoController {
 
         const result = validateCita(req.body)
 
-        if (!result.success) throw new BadRequestError('Verificar datos de la cita')
+        if (!result.success) {
+            console.log("errores zod:", JSON.stringify(result.error.errors, null, 2))
+            throw new BadRequestError(result.error.errors)
+        }
 
         const medicoId  = req.user.id
         console.log('USER:', req.user.id)
@@ -98,13 +101,12 @@ export class MedicoController {
         
         const result = validatePartialCita(req.body)
 
-        if (!result.success) throw new BadRequestError('Verificar datos de la cita')
+        if (!result.success) {
+            console.log("errores zod:", JSON.stringify(result.error.errors, null, 2))
+            throw new BadRequestError(result.error.errors)
+        }
         
-
         const medicoId  = req.user.id
-
-
-
 
         const { id: citaId } = req.params
 

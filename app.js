@@ -10,12 +10,12 @@ import authMiddleware from './middlewares/authMiddleware.js'
 import rolesAutorizados  from './middlewares/roleMiddleware.js'
 import sanitizeMiddleware from './utils/sanitizador.js'
 import { corsMiddleware } from './middlewares/cors.js'
-import { actualizarEstados } from './crons/actualizarEstadoCitas.js'
+//import { actualizarEstados } from './crons/actualizarEstadoCitas.js'
 
 dotenv.config()
 
 const app = express()
-app.set('trust proxy', 1)
+app.set('trust proxy', 1) // para confiar en el proxy inmediato y usar la IP que brinda del usuario
 app.use(helmet()) // para seguridad HTTP headers
 app.use(corsMiddleware()) // para manejar CORS
 
@@ -29,22 +29,12 @@ app.use('/api/auth', sanitizeMiddleware, authRouter)
 app.use('/api/admin', sanitizeMiddleware, authMiddleware, rolesAutorizados('admin'), adminRouter)
 app.use('/api/medico', sanitizeMiddleware, authMiddleware, rolesAutorizados('admin', 'medico'), medicoRouter)
 
-
-
-// Manejo de rutas no encontradas
-/*app.all('/{path}', (req, res) => { 
-  res.status(404).sendFile(path.join(__dirname, 'vistas', '404.html')); 
-               
-})*/
-
 app.use((err, req, res, next) => {
   if (err.isOperational) {
     return res.status(err.statusCode).json({
       error: err.message
     })
   }
-
-  console.error(err)
 
   res.status(500).json({
     error: 'Error interno del servidor'
