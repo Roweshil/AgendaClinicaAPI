@@ -10,7 +10,7 @@ import authMiddleware from './middlewares/authMiddleware.js'
 import rolesAutorizados  from './middlewares/roleMiddleware.js'
 import sanitizeMiddleware from './utils/sanitizador.js'
 import { corsMiddleware } from './middlewares/cors.js'
-//import { actualizarEstados } from './crons/actualizarEstadoCitas.js'
+import { actualizarEstados } from './crons/actualizarEstadoCitas.js'
 
 dotenv.config()
 
