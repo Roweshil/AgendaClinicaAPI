@@ -1,0 +1,562 @@
+openapi: 3.0.3
+info:
+  title: AgendaClinica API
+  description: API para gestión de médicos y citas médicas
+  version: 1.0.0
+  contact:
+    name: Soporte
+    email: soporte@agendaclinica.com
+
+servers:
+  - url: http://localhost:3000
+    description: Servidor de desarrollo
+
+tags:
+  - name: Autenticación
+    description: Endpoints de autenticación
+  - name: Médicos
+    description: Gestión de médicos (admin)
+  - name: Citas
+    description: Gestión de citas médicas
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Autenticación
+      summary: Iniciar sesión
+      description: Autentica un usuario y devuelve un token JWT en cookie
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: doctor@clinica.com
+                password:
+                  type: string
+                  format: password
+                  example: contraseña123
+      responses:
+        '200':
+          description: Login exitoso
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: access_token=eyJhbGciOiJIUzI1NiIs...; HttpOnly; Secure; SameSite=lax
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Login exitoso
+        '400':
+          description: Error de validación
+        '429':
+          description: Demasiados intentos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/logout:
+    post:
+      tags:
+        - Autenticación
+      summary: Cerrar sesión
+      description: Limpia la cookie de autenticación
+      responses:
+        '200':
+          description: Logout exitoso
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: access_token=; HttpOnly; Secure; Max-Age=0
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Logout exitoso
+
+  /auth/me:
+    get:
+      tags:
+        - Autenticación
+      summary: Validar token
+      description: Verifica si el token JWT es válido y devuelve los datos del usuario
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Token válido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      nombre:
+                        type: string
+                      apellido:
+                        type: string
+                      email:
+                        type: string
+                      rol:
+                        type: string
+
+  /medico/consulta:
+    get:
+      tags:
+        - Médicos
+      summary: Obtener todos los médicos
+      description: Lista todos los médicos registrados (requiere autenticación)
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Lista de médicos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  count:
+                    type: integer
+                  medicos:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Medico'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /medico/consulta/{id}:
+    get:
+      tags:
+        - Médicos
+      summary: Obtener médico por ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: 550e8400-e29b-41d4-a716-446655440000
+      responses:
+        '200':
+          description: Médico encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Medico'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /medico/crear:
+    post:
+      tags:
+        - Médicos
+      summary: Crear médico
+      description: Registra un nuevo médico en el sistema
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MedicoInput'
+      responses:
+        '201':
+          description: Médico creado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  uuid:
+                    type: string
+                  nombre:
+                    type: string
+                  apellido:
+                    type: string
+                  telefono:
+                    type: string
+                  email:
+                    type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /medico/actualizar/{id}:
+    patch:
+      tags:
+        - Médicos
+      summary: Actualizar médico
+      description: Actualiza los datos de un médico existente
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MedicoPartial'
+      responses:
+        '201':
+          description: Médico actualizado
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /medico/borrar/{id}:
+    delete:
+      tags:
+        - Médicos
+      summary: Eliminar médico
+      description: Elimina un médico y todos sus registros
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Médico eliminado
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /medico/password-reset:
+    post:
+      tags:
+        - Médicos
+      summary: Restablecer contraseña
+      description: Actualiza la contraseña de un médico
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - uuid
+                - password
+              properties:
+                uuid:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '201':
+          description: Contraseña actualizada
+
+  /citas/mis-citas/:
+    get:
+      tags:
+        - Citas
+      summary: Obtener mis citas
+      description: Lista las citas del médico autenticado
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Lista de citas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  count:
+                    type: integer
+                  citas:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Cita'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /citas/consulta/{id}:
+    get:
+      tags:
+        - Citas
+      summary: Obtener cita por ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cita encontrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  users:
+                    $ref: '#/components/schemas/Cita'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /citas/crear:
+    post:
+      tags:
+        - Citas
+      summary: Crear cita
+      description: Crea una nueva cita médica
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CitaInput'
+      responses:
+        '201':
+          description: Cita creada
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /citas/actualizar/{id}:
+    patch:
+      tags:
+        - Citas
+      summary: Actualizar cita
+      description: Actualiza una cita existente
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CitaPartial'
+      responses:
+        '200':
+          description: Cita actualizada
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /citas/eliminar/{id}:
+    delete:
+      tags:
+        - Citas
+      summary: Eliminar cita
+      description: Elimina una cita médica
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Cita eliminada
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+
+    Medico:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        nombre:
+          type: string
+        apellido:
+          type: string
+        telefono:
+          type: string
+        email:
+          type: string
+          format: email
+
+    MedicoInput:
+      type: object
+      required:
+        - nombre
+        - apellido
+        - telefono
+        - email
+        - password
+      properties:
+        nombre:
+          type: string
+          minLength: 2
+          maxLength: 100
+        apellido:
+          type: string
+          minLength: 2
+          maxLength: 100
+        telefono:
+          type: string
+          minLength: 10
+          maxLength: 20
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+          maxLength: 50
+
+    MedicoPartial:
+      type: object
+      properties:
+        nombre:
+          type: string
+        apellido:
+          type: string
+        telefono:
+          type: string
+        email:
+          type: string
+
+    Cita:
+      type: object
+      properties:
+        uuid:
+          type: string
+        telefono:
+          type: string
+        fecha:
+          type: string
+          format: date
+        hora:
+          type: string
+        paciente:
+          type: string
+        motivo:
+          type: string
+        estado:
+          type: string
+          enum: [confirmada, cancelada, vencida]
+        creacion:
+          type: string
+          format: date-time
+
+    CitaInput:
+      type: object
+      required:
+        - paciente
+        - telefono
+        - fecha
+        - hora
+        - motivo
+        - estado
+      properties:
+        paciente:
+          type: string
+          minLength: 2
+          maxLength: 100
+        telefono:
+          type: string
+          minLength: 10
+          maxLength: 20
+        fecha:
+          type: string
+        hora:
+          type: string
+        motivo:
+          type: string
+          minLength: 2
+          maxLength: 255
+        estado:
+          type: string
+          enum: [confirmada, cancelada, vencida]
+
+    CitaPartial:
+      type: object
+      properties:
+        paciente:
+          type: string
+        telefono:
+          type: string
+        fecha:
+          type: string
+        hora:
+          type: string
+        motivo:
+          type: string
+        estado:
+          type: string
+          enum: [confirmada, cancelada, vencida]
+
+  responses:
+    BadRequest:
+      description: Solicitud incorrecta
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Recurso no encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
