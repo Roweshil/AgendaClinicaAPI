@@ -1,8 +1,7 @@
 import CORS from 'cors'
 
 const ACCEPTED_ORIGINS = [
-  'http://localhost:3050',
-  'http://localhost:1234',
+  'http://localhost:3050',,
   'http://localhost:5173',
   'https://agenda-clinica-react.vercel.app',
   'FRONT_URL'

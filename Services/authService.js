@@ -16,9 +16,10 @@ export class AuthService {
       
     if (!user) throw new UnathorizedError('Credenciales inválidas')
 
-    const isValid = await bcrypt.compare(password, user.hashedPassword)
 
-    if (!isValid) throw new UnathorizedError('Credenciales inválidas')
+    const passwordValido = await bcrypt.compare(password, user.hashedPassword)
+
+    if (!passwordValido) throw new UnathorizedError('Credenciales inválidas')
 
       //uuid, nombre, apellido, email, roles
     const token = jwt.sign(
