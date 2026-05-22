@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 import {Unauthorized, ForbiddenError} from '../utils/app.error.js'
 
 const authMiddleware = (req, res, next) => {
-  const token = req.signedCookies.access_token
+  const token = req.cookies.access_token
   
 
   if (!token) {

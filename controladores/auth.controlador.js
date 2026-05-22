@@ -5,7 +5,7 @@ import { AppError } from "../utils/app.error.js"
 
 const cookieOptions = {
     httpOnly: true, // solo se puede acceder en el servidor
-    signed: true, // firma criptografica siempre activa, se rompe si se modifica
+    //signed: true, // firma criptografica siempre activa, se rompe si se modifica
     secure: process.env.NODE_ENV === 'production', // la cookie solo se puede acceder en https en produccion
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'  //la cookie solo se puede acceder en el mismo dominio
 }
@@ -22,6 +22,7 @@ export class AuthController {
         try {
             const { token, response } = await AuthService.login({ input: result.data })   
             
+            console.log("entro el log")
             return res
             .status(200)
             .cookie('access_token', token, {
