@@ -24,9 +24,9 @@ export class ModeloMedico {
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [uuid, medico_Id, paciente, telefono, fecha, hora, motivo, estado, google_event_id]
       )
-    
+        
       return { uuid, paciente, telefono, fecha, hora, motivo, estado, creacion: Date.now() }
-    
+
     } catch (error) {
       throw mapDatabaseError(error)
     }
@@ -37,6 +37,8 @@ export class ModeloMedico {
     try {
 
       const resultado = await db.execute('SELECT * FROM citas WHERE uuid = ? AND medico_id = ?', [citaId, medicoId])
+
+      if (resultado.rows.length === 0 ) throw new NotFoundError()
 
       return resultado.rows[0]; 
 
@@ -53,8 +55,8 @@ export class ModeloMedico {
       return resultado.rows
       
     } catch (error) {
-      throw new NotFoundError('No se encontraron citas para este médico')
-    }  
+      throw new mapDatabaseError(error)
+    }
   }
 
   static async eliminarCita({medicoId, citaId}) {
@@ -112,7 +114,6 @@ export class ModeloMedico {
 
       const result = await db.execute(sql, values)
 
-      console.log('Cita actualizada:', result)
       return result
 
     } catch (error) {

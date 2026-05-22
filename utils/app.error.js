@@ -2,6 +2,7 @@ export class AppError extends Error {
   constructor(message, statusCode) {
     super(message)
     this.statusCode = statusCode
+    this.name = this.constructor.name
     this.isOperational = true
   }
 }
@@ -13,7 +14,7 @@ export class NotFoundError extends AppError {
 }
 
 export class ForbiddenError extends AppError {
-  constructor(message = 'No autorizado') {
+  constructor(message = 'Crecenciales Invalidas') {
     super(message, 403)
   }
 }
@@ -24,8 +25,8 @@ export class BadRequestError extends AppError {
   }
 }
 
-export class UnathorizedError extends AppError {
-  constructor(message = 'No autenticado') {
+export class Unauthorized extends AppError {
+  constructor(message = 'Sin autorizacion') {
     super(message, 401)
   }
 }
@@ -37,7 +38,7 @@ export class ConflictError extends AppError {
 }
 
 export class BusyBD extends AppError {
-  constructor(message = 'Base de datos ocupada') {
+  constructor(message = 'Servicio no disponible') {
     super(message, 503)
   }
 }

@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
-import { UnathorizedError } from '../utils/app.error.js'
+import { Unauthorized } from '../utils/app.error.js'
 
 import { ModeloAuth } from '../modelo/auth.modelo.js'
 
@@ -14,12 +14,12 @@ export class AuthService {
       (await ModeloAuth.buscarPorAdmin(email)) ??
       (await ModeloAuth.buscarPorEmail(email))
       
-    if (!user) throw new UnathorizedError('Credenciales inválidas')
+    if (!user) throw new Unauthorized('Sin autorizacion')
 
 
     const passwordValido = await bcrypt.compare(password, user.hashedPassword)
 
-    if (!passwordValido) throw new UnathorizedError('Credenciales inválidas')
+    if (!passwordValido) throw new Unauthorized('Sin autorizacion')
 
       //uuid, nombre, apellido, email, roles
     const token = jwt.sign(
@@ -30,13 +30,13 @@ export class AuthService {
         rol: user.roles 
       },
       process.env.JWT_SECRET,
-      { expiresIn: '30m' }
+      { expiresIn: '15m' }
     )
 
     return {
       token,
       response: {
-        ok: "Autenticacion exitosa"
+        ok: "Autenticación exitosa"
       }
     }
   }

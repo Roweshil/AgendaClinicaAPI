@@ -1,10 +1,12 @@
 import jwt from 'jsonwebtoken'
+import {Unauthorized, ForbiddenError} from '../utils/app.error.js'
 
 const authMiddleware = (req, res, next) => {
-  const token = req.cookies.access_token
+  const token = req.signedCookies.access_token
+  
 
   if (!token) {
-    return res.status(403).json({ error: 'No autenticado' })
+    throw new Unauthorized()
   }
 
   try {
@@ -15,7 +17,7 @@ const authMiddleware = (req, res, next) => {
 
     next()
   } catch (err) {
-    return res.status(401).json({ error: 'Token inválido o expirado' })
+    throw new ForbiddenError()
   }
 }
 

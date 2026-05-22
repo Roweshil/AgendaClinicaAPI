@@ -11,6 +11,7 @@ import rolesAutorizados  from './middlewares/roleMiddleware.js'
 import sanitizeMiddleware from './utils/sanitizador.js'
 import { corsMiddleware } from './middlewares/cors.js'
 import { actualizarEstados } from './crons/actualizarEstadoCitas.js'
+import { errorHandler } from './middlewares/errorHandler.js'
 
 dotenv.config()
 
@@ -19,7 +20,7 @@ app.set('trust proxy', 1) // para confiar en el proxy inmediato y usar la IP que
 app.use(helmet()) // para seguridad HTTP headers
 app.use(corsMiddleware()) // para manejar CORS
 
-app.use(cookieParser())
+app.use(cookieParser(process.env.COOKIE_SECRET))
 
 app.use(express.json({ limit: '10kb' })) // para parsear JSON con un límite de tamaño
 app.disable('x-powered-by') // deshabilitar el header X-Powered-By: Express
@@ -29,20 +30,13 @@ app.use('/api/auth', sanitizeMiddleware, authRouter)
 app.use('/api/admin', sanitizeMiddleware, authMiddleware, rolesAutorizados('admin'), adminRouter)
 app.use('/api/medico', sanitizeMiddleware, authMiddleware, rolesAutorizados('admin', 'medico'), medicoRouter)
 
-app.use((err, req, res, next) => {
-  if (err.isOperational) {
-    return res.status(err.statusCode).json({
-      error: err.message
-    })
-  }
+app.use(errorHandler)
 
-  res.status(500).json({
-    error: 'Error interno del servidor'
-  })
-})
 
 const PORT = process.env.PORT ?? 1234
 
 app.listen(PORT, () => {
   console.log(`server listening on port http://localhost:${PORT}`)
 })
+
+export default app
