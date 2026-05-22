@@ -21,7 +21,7 @@ API REST para la gestión de citas médicas con autenticación por roles, constr
 
 ## Features
 
-- Autenticación con JWT stateless — tokens en cookies httpOnly
+- Autenticación con JWT stateless — tokens en cookies httpOnly y firmadas
 - Autorización por roles — Admin y Médico
 - CRUD completo de citas con validación de datos
 - Actualización automática de estatus via cron jobs
@@ -29,7 +29,7 @@ API REST para la gestión de citas médicas con autenticación por roles, constr
 - Protección contra XSS, CSRF y SQL injection
 - Integración con Google Calendar API
 - Arquitectura limpia — controladores, modelos y rutas separados
-
+- Manejo de errores profesional centralizado
 ---
 
 ## Roles
@@ -74,6 +74,7 @@ DB_TOKEN=
 # Autenticación
 JWT_SECRET=
 SALT_ROUNDS=
+COOKIE_SECRET=
 
 # Servidor
 PORT=
@@ -123,9 +124,11 @@ Configuración requerida en Render:
 
 - Contraseñas hasheadas con bcrypt
 - JWT en cookies httpOnly — no accesibles desde JavaScript del cliente
+- Cookies Firmadas Criptográficamente (Signed Cookies): Las cookies viajan acompañadas de una firma digital única
 - Helmet para headers HTTP seguros
 - Rate limiting en `/api/auth/login` — máximo 5 intentos por IP en 15 minutos
 - Validación de inputs con Zod en todos los endpoints y queries
+- Protocolo de manejo de errores y resilencia (Error Handling)
 
 ---
 

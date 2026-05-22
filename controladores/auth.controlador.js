@@ -23,7 +23,6 @@ export class AuthController {
         try {
             const { token, response } = await AuthService.login({ input: result.data })   
             
-            console.log("entro el log")
             return res
             .status(200)
             .cookie('access_token', token, {
