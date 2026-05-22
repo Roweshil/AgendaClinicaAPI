@@ -20,7 +20,7 @@ app.set('trust proxy', 1) // para confiar en el proxy inmediato y usar la IP que
 app.use(helmet()) // para seguridad HTTP headers
 app.use(corsMiddleware()) // para manejar CORS
 
-app.use(cookieParser())
+app.use(cookieParser(process.env.COOKIE_SECRET))
 
 app.use(express.json({ limit: '10kb' })) // para parsear JSON con un límite de tamaño
 app.disable('x-powered-by') // deshabilitar el header X-Powered-By: Express

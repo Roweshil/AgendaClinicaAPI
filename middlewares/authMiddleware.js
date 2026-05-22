@@ -2,7 +2,11 @@ import jwt from 'jsonwebtoken'
 import {Unauthorized, ForbiddenError} from '../utils/app.error.js'
 
 const authMiddleware = (req, res, next) => {
-  const token = req.cookies.access_token
+  console.log("--- NUEVA PETICIÓN PROTEGIDA ---");
+  console.log("Cookies normales (req.cookies):", req.cookies);
+  console.log("Cookies firmadas (req.signedCookies):", req.signedCookies);
+  console.log("Cabecera Cookie cruda:", req.headers.cookie);
+  const token = req.signedCookies?.access_token
   
 
   if (!token) {
