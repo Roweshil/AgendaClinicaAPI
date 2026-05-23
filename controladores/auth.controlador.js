@@ -15,7 +15,7 @@ const cookieOptions = {
 export class AuthController {
 
     
-   static async login(req, res) {
+   static async login(req, res, next) {
         const result = validateAuth(req.body)
 
         if (!result.success) throw new BadRequestError()

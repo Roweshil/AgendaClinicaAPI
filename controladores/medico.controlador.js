@@ -6,7 +6,7 @@ import { mapDatabaseError } from '../utils/app.error.js'
 
 export class MedicoController {
 
-    static async crearCita (req, res) {
+    static async crearCita (req, res, next) {
 
         try {
             const result = validateCita(req.body)
@@ -93,7 +93,7 @@ export class MedicoController {
         }
     }
 
-    static async eliminarCita (req, res) {
+    static async eliminarCita (req, res, next) {
 
         const result = validateIdParam(req.params)
 
@@ -113,7 +113,7 @@ export class MedicoController {
 
     }
 
-    static async actualizarCita (req, res) {
+    static async actualizarCita (req, res, next) {
 
         try {
 
