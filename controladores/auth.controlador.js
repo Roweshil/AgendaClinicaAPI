@@ -31,7 +31,7 @@ export class AuthController {
             .json(response)
         } catch (error) {
             if (error instanceof AppError) {
-                return next(error);
+                return next(error)
             }
 
             return next(error)
