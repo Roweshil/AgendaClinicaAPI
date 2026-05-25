@@ -7,7 +7,8 @@ const cookieOptions = {
     httpOnly: true, // solo se puede acceder en el servidor
     signed: true, // firma criptografica siempre activa, se rompe si se modifica
     secure: process.env.NODE_ENV === 'production', // la cookie solo se puede acceder en https en produccion
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',  //la cookie solo se puede acceder en el mismo dominio
+    sameSite: 'lax',  //la cookie solo se puede acceder en el mismo dominio
+    path: '/',
     maxAge: 900000 // validez durante 15 minutos
 }
 
