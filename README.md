@@ -132,6 +132,9 @@ Configuración requerida en Render:
 ---
 
 ## Roadmap
+
+El proyecto está en **desarrollo activo**. Este es el estado de las funcionalidades planificadas
+
 - [ ] Implementacion de Redis para Refresh Token
 - [ ] Bloqueo de cuenta por intentos fallidos en base de datos
 - [ ] Notificaciones automáticas via WhatsApp/email
