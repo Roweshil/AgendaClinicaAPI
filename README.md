@@ -1,6 +1,6 @@
 # AgendaClinicaAPI
 
-Backend de **Agenda Clínica** — producto de [RoweWorks](https://roweshil.dev).
+Backend de **Agenda Clínica** — producto de [RoweWorks](https://api.roweshil.com).
 API REST para la gestión de citas médicas con autenticación por roles, construida sobre Node.js /Express y desplegada en Render.
 
 ---
@@ -27,7 +27,6 @@ API REST para la gestión de citas médicas con autenticación por roles, constr
 - Actualización automática de estatus via cron jobs
 - Rate limiting en endpoints críticos
 - Protección contra XSS, CSRF y SQL injection
-- Integración con Google Calendar API
 - Arquitectura limpia — controladores, modelos y rutas separados
 - Manejo de errores profesional centralizado
 ---
@@ -139,7 +138,7 @@ Configuración requerida en Render:
 - [ ] Rol paciente con autoagendado
 - [ ] Documentación Swagger
 - [ ] Testing con Jest
-
+- [ ] Integración con Google Calendar API
 ---
 
 ## Producto
