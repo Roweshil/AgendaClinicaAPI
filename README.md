@@ -132,7 +132,7 @@ Configuración requerida en Render:
 ---
 
 ## Roadmap
-
+- [ ] Implementacion de Redis para Refresh Token
 - [ ] Bloqueo de cuenta por intentos fallidos en base de datos
 - [ ] Notificaciones automáticas via WhatsApp/email
 - [ ] Rol paciente con autoagendado
