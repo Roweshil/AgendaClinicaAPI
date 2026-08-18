@@ -10,7 +10,7 @@ const medicoRouter = Router()
 
 medicoRouter.get('/citas/mis-citas/', readLimiter, MedicoController.obtenerCitasPorMedico)
 
-medicoRouter.get('/citas/consulta/:id',readLimiter, MedicoController.obtenerCitaPorId)
+medicoRouter.get('/citas/consulta/:id', readLimiter, MedicoController.obtenerCitaPorId)
 
 medicoRouter.post('/citas/crear', writterLimiter, MedicoController.crearCita)
 

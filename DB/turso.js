@@ -1,5 +1,5 @@
 import dotenv from 'dotenv'
-import { createClient } from "@libsql/client"
+import { createClient } from '@libsql/client'
 
 dotenv.config()
 

@@ -5,7 +5,6 @@ import { Router } from "express"
 
 import { AdminController } from "../../controladores/admin.controlador.js"
 
-
 const adminRouter = Router()
 
 adminRouter.get('/consulta', AdminController.obtenerTodos)

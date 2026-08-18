@@ -5,7 +5,6 @@ import authMiddleware from "../../middlewares/authMiddleware.js"
 
 const authRouter = Router()
 
-
 // Rutas Publicas
 
 authRouter.get('/me', authMiddleware, AuthController.validarToken)
@@ -15,11 +14,3 @@ authRouter.post('/login', loginLimiter, AuthController.login)
 authRouter.post('/logout', AuthController.logout)
 
 export default authRouter
-
-
-
-
-
-// (Deshabilitadas temporalmente para pruebas)
-
- //authRouter.post('/register', AuthController.register)

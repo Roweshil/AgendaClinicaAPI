@@ -31,11 +31,10 @@ app.use('/api/admin', sanitizeMiddleware, authMiddleware, rolesAutorizados('admi
 app.use('/api/medico', sanitizeMiddleware, authMiddleware, rolesAutorizados('admin', 'medico'), medicoRouter)
 
 app.use((req, res, next) => {
-    res.status(404).json({ error: 'Ruta no encontrada' })
+  res.status(404).json({ error: 'Ruta no encontrada' })
 })
 
 app.use(errorHandler)
-
 
 const PORT = process.env.PORT ?? 1234
 
